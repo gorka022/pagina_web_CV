@@ -1,0 +1,70 @@
+---
+import profile from '../data/profile.json';
+---
+
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent bg-white shadow-sm text-surface-900">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-3 group">
+        <div class="w-8 h-8 rounded-sm bg-primary-600 flex items-center justify-center text-white font-bold text-sm tracking-widest transition-colors group-hover:bg-accent-500">
+          GC
+        </div>
+        <span class="font-bold text-surface-900 hidden sm:inline uppercase tracking-wider text-sm">{profile.name}</span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-2">
+        <a href="#hero" class="nav-link px-3 py-2 text-xs font-bold uppercase tracking-wider text-surface-600 hover:text-primary-600 transition-colors">Home</a>
+        <a href="#experience" class="nav-link px-3 py-2 text-xs font-bold uppercase tracking-wider text-surface-600 hover:text-primary-600 transition-colors">Experience</a>
+        <a href="#projects" class="nav-link px-3 py-2 text-xs font-bold uppercase tracking-wider text-surface-600 hover:text-primary-600 transition-colors">Projects</a>
+        <a href="#contact" class="nav-link px-3 py-2 text-xs font-bold uppercase tracking-wider text-surface-600 hover:text-primary-600 transition-colors">Contact</a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="flex items-center gap-2 md:hidden">
+        <button id="mobile-menu-btn" class="p-2 rounded-sm text-surface-600 hover:bg-surface-100 transition-colors" aria-label="Menu">
+          <svg id="menu-open-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="menu-close-icon" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-surface-200 bg-white">
+    <div class="px-4 py-3 space-y-1">
+      <a href="#hero" class="mobile-nav-link block px-4 py-3 text-xs font-bold uppercase tracking-wider text-surface-700 hover:bg-surface-50 hover:text-primary-600 transition-colors">Home</a>
+      <a href="#experience" class="mobile-nav-link block px-4 py-3 text-xs font-bold uppercase tracking-wider text-surface-700 hover:bg-surface-50 hover:text-primary-600 transition-colors">Experience</a>
+      <a href="#projects" class="mobile-nav-link block px-4 py-3 text-xs font-bold uppercase tracking-wider text-surface-700 hover:bg-surface-50 hover:text-primary-600 transition-colors">Projects</a>
+      <a href="#contact" class="mobile-nav-link block px-4 py-3 text-xs font-bold uppercase tracking-wider text-surface-700 hover:bg-surface-50 hover:text-primary-600 transition-colors">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<script is:inline>
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuOpenIcon = document.getElementById('menu-open-icon');
+  const menuCloseIcon = document.getElementById('menu-close-icon');
+  
+  mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    menuOpenIcon.classList.toggle('hidden');
+    menuCloseIcon.classList.toggle('hidden');
+  });
+  
+  // Close mobile menu on link click
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      menuOpenIcon.classList.remove('hidden');
+      menuCloseIcon.classList.add('hidden');
+    });
+  });
+</script>

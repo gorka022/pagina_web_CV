@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Portfolio Management",
+    "description": "Construction of optimal portfolios using Markowitz theory (Mean-Variance) and Sharpe ratio maximization. Efficient frontier analysis and asset allocation.",
+    "longDescription": "This project implements the Markowitz Mean-Variance optimization framework to construct efficient investment portfolios. It calculates the expected returns, covariance matrix, and the efficient frontier. The model allows for the identification of the Global Minimum Variance (GMV) portfolio and the Tangency Portfolio (Maximum Sharpe Ratio). Key features include visualization of the risk-return tradeoff and dynamic asset allocation strategies based on historical data.",
+    "image": "",
+    "tags": ["Python", "NumPy", "Pandas", "Markowitz", "Max-Sharpe"],
+    "link": "",
+    "demo": "",
+    "featured": true,
+    "codeFile": "/code/portfolio_management.py",
+    "codeLang": "python"
+  },
+  {
+    "title": "Market & Systemic Risk",
+    "description": "Estimation of Value at Risk (VaR) and Conditional VaR (CoVaR) metrics to measure systemic risk. Analysis of spillovers and contagion between financial markets.",
+    "longDescription": "This study focuses on measuring systemic risk and the interconnectedness between financial institutions. Using Delta Conditional Value at Risk (ΔCoVaR) and Quantile Regression, I analyze how the distress of one entity affects the overall market risk. The project includes the estimation of systemic risk contributions and the mapping of risk spillovers, providing a comprehensive view of financial stability and contagion channels.",
+    "image": "",
+    "tags": ["R", "Python", "VaR", "CoVaR", "Systemic Risk"],
+    "link": "",
+    "demo": "",
+    "featured": true,
+    "codeFile": "/code/market_systemic_risk.R",
+    "codeLang": "r"
+  },
+  {
+    "title": "Derivatives Valuation",
+    "description": "Options valuation using the Black-Scholes model and Monte Carlo simulation. Sensitivity analysis through the Greeks (Delta, Gamma, Vega, Theta).",
+    "longDescription": "A comprehensive tool for pricing financial derivatives. It implements the closed-form Black-Scholes-Merton model for European options and Monte Carlo simulation for path-dependent options. The project emphasizes 'The Greeks'—Delta, Gamma, Theta, Vega, and Rho—to perform sensitivity analysis and manage portfolio risk. It also features implied volatility calculations using the Newton-Raphson numerical method.",
+    "image": "",
+    "tags": ["Python", "Black-Scholes", "Monte Carlo", "Options", "Greeks"],
+    "link": "",
+    "demo": "",
+    "featured": true,
+    "codeFile": "/code/derivatives_valuation.py",
+    "codeLang": "python"
+  },
+  {
+    "title": "Time Series Analysis",
+    "description": "Estimation of ARIMA and VAR models for financial time series forecasting. Stationarity diagnostics, cointegration, and impulse-response analysis.",
+    "longDescription": "This econometric project explores advanced time series modeling for financial forecasting. It covers the complete workflow: from stationarity testing (ADF, KPSS) and seasonality adjustment to the estimation of ARIMA (for univariate) and VAR (for multivariate) models. The analysis includes Granger causality tests, impulse-response functions (IRF), and variance decomposition to understand the dynamic relationships between economic variables.",
+    "image": "",
+    "tags": ["R", "ARIMA", "VAR", "Forecasting", "Econometrics"],
+    "link": "",
+    "demo": "",
+    "featured": true,
+    "codeFile": "/code/time_series_analysis.R",
+    "codeLang": "r"
+  }
+]
