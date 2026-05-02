@@ -14,12 +14,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFiles": [
-      {
-        "path": "/code/portfolio_management.py",
-        "label": "portfolio_management.py"
-      }
-    ],
+    "codeFolder": "portfolio_management",
     "codeLang": "python"
   },
   {
@@ -37,12 +32,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFiles": [
-      {
-        "path": "/code/market_systemic_risk.R",
-        "label": "market_systemic_risk.R"
-      }
-    ],
+    "codeFolder": "market_systemic_risk",
     "codeLang": "r"
   },
   {
@@ -60,12 +50,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFiles": [
-      {
-        "path": "/code/derivatives_valuation.py",
-        "label": "derivatives_valuation.py"
-      }
-    ],
+    "codeFolder": "derivatives_valuation",
     "codeLang": "python"
   },
   {
@@ -83,16 +68,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFiles": [
-      {
-        "path": "/code/time_series_analysis.R",
-        "label": "time_series_analysis.R"
-      },
-      {
-        "path": "/code/derivatives_valuation.py",
-        "label": "derivatives_valuation.py"
-      }
-    ],
+    "codeFolder": "time_series_analysis",
     "codeLang": "r"
   }
 ]

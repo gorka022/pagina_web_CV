@@ -214,10 +214,11 @@
     fileList.innerHTML = '';
     files.forEach(function(file, idx) {
       const ext = getFileExt(file.label);
+      const baseName = ext ? file.label.slice(0, -(ext.length + 1)) : file.label;
       const item = document.createElement('button');
       item.className = 'file-explorer-item' + (idx === activeIndex ? ' active' : '');
       item.innerHTML = getFileIconSVG(ext) +
-        '<span class="file-name">' + file.label + '</span>' +
+        '<span class="file-name">' + baseName + '</span>' +
         (ext ? '<span class="file-ext">.' + ext + '</span>' : '');
       item.addEventListener('click', function() {
         loadFile(idx);
