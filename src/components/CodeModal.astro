@@ -184,6 +184,7 @@
 
   let currentCode = '';
   let currentFiles = [];
+  let currentDirStack = [];
   let currentLang = '';
   let currentTitleStr = '';
 
@@ -211,31 +212,61 @@
   }
 
   // Build the file explorer sidebar
-  function buildFileExplorer(files, activeIndex) {
+  function buildFileExplorer(activeIndex) {
     fileList.innerHTML = '';
-    files.forEach(function(file, idx) {
-      const ext = getFileExt(file.label);
+    if (currentDirStack.length === 0) return;
+    const currentFolder = currentDirStack[currentDirStack.length - 1];
+    const items = currentFolder.children || [];
+
+    if (currentDirStack.length > 1) {
+      const backItem = document.createElement('button');
+      backItem.className = 'file-explorer-item';
+      backItem.innerHTML = '<svg class="file-icon" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>' +
+        '<span class="file-name text-surface-400">.. / Volver</span>';
+      backItem.addEventListener('click', function() {
+        currentDirStack.pop();
+        buildFileExplorer(-1);
+      });
+      fileList.appendChild(backItem);
+    }
+
+    items.forEach(function(file, idx) {
+      const isFolder = file.type === 'folder';
+      const ext = isFolder ? '' : getFileExt(file.label);
       const baseName = ext ? file.label.slice(0, -(ext.length + 1)) : file.label;
       const item = document.createElement('button');
-      item.className = 'file-explorer-item' + (idx === activeIndex ? ' active' : '');
-      item.innerHTML = getFileIconSVG(ext) +
+      
+      item.className = 'file-explorer-item' + (idx === activeIndex && !isFolder ? ' active' : '');
+      
+      let iconSvg = '';
+      if (isFolder) {
+        iconSvg = '<svg class="file-icon" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg>';
+      } else {
+        iconSvg = getFileIconSVG(ext);
+      }
+
+      item.innerHTML = iconSvg +
         '<span class="file-name">' + baseName + '</span>' +
-        (ext ? '<span class="file-ext">.' + ext + '</span>' : '');
+        (ext ? '<span class="file-ext">.' + ext + '</span>' : (isFolder ? '<span class="file-ext bg-surface-800 border-none text-surface-400">DIR</span>' : ''));
+        
       item.addEventListener('click', function() {
-        loadFile(idx);
+        if (isFolder) {
+          currentDirStack.push(file);
+          buildFileExplorer(-1);
+        } else {
+          loadFile(file, idx);
+        }
       });
       fileList.appendChild(item);
     });
   }
 
-  // Load a specific file by index
-  async function loadFile(index) {
-    if (index < 0 || index >= currentFiles.length) return;
-
-    const file = currentFiles[index];
+  // Load a specific file
+  async function loadFile(file, index) {
+    if (!file) return;
     
     // Update active state in file explorer
-    buildFileExplorer(currentFiles, index);
+    buildFileExplorer(index);
 
     // Show loading
     loading.classList.remove('hidden');
@@ -271,6 +302,26 @@
     }
   }
 
+  function findFirstFile(items) {
+    for (const item of items) {
+      if (item.type === 'file') return item;
+      if (item.type === 'folder' && item.children) {
+        const f = findFirstFile(item.children);
+        if (f) return f;
+      }
+    }
+    return null;
+  }
+
+  function countTotalFiles(items) {
+    let count = 0;
+    for (const item of items) {
+      if (item.type === 'file') count++;
+      if (item.type === 'folder' && item.children) count += countTotalFiles(item.children);
+    }
+    return count;
+  }
+
   // Open modal — now accepts codeFiles as a JSON string array
   window.openCodeModal = async function(projectTitle, codeFilesJSON, codeLang, longDescription) {
     currentCode = '';
@@ -280,9 +331,13 @@
     // Parse codeFiles
     try {
       currentFiles = JSON.parse(codeFilesJSON);
+      // Ensure backwards compatibility by giving type to objects
+      currentFiles = currentFiles.map(f => f.type ? f : { ...f, type: 'file' });
+      currentDirStack = [{ name: 'root', children: currentFiles }];
     } catch (e) {
       // Fallback: treat as single file path (backwards compat)
-      currentFiles = [{ path: codeFilesJSON, label: codeFilesJSON.split('/').pop() }];
+      currentFiles = [{ type: 'file', path: codeFilesJSON, label: codeFilesJSON.split('/').pop() }];
+      currentDirStack = [{ name: 'root', children: currentFiles }];
     }
 
     title.textContent = projectTitle;
@@ -292,10 +347,11 @@
     langBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide ' + lc.bg;
 
     // Show file count badge if multiple files
-    if (currentFiles.length > 1) {
+    const totalFiles = countTotalFiles(currentFiles);
+    if (totalFiles > 1) {
       fileCountBadge.classList.remove('hidden');
       fileCountBadge.classList.add('inline-flex');
-      fileCountText.textContent = currentFiles.length + ' files';
+      fileCountText.textContent = totalFiles + ' files';
     } else {
       fileCountBadge.classList.add('hidden');
       fileCountBadge.classList.remove('inline-flex');
@@ -312,9 +368,19 @@
       content.classList.add('scale-100', 'opacity-100');
     });
 
-    // Build file explorer and load first file
-    buildFileExplorer(currentFiles, 0);
-    await loadFile(0);
+    // Load first file
+    const rootItems = currentDirStack[0].children;
+    const firstFileIdx = rootItems.findIndex(f => f.type === 'file');
+    if (firstFileIdx !== -1) {
+      loadFile(rootItems[firstFileIdx], firstFileIdx);
+    } else {
+      const first = findFirstFile(rootItems);
+      if (first) {
+        loadFile(first, -1);
+      } else {
+        buildFileExplorer(-1);
+      }
+    }
   };
 
   function closeModal() {
@@ -370,13 +436,20 @@
     try {
       const zip = new JSZip();
       
-      const fetches = currentFiles.map(async file => {
-        const response = await fetch(file.path);
-        const text = await response.text();
-        zip.file(file.label, text);
-      });
+      async function addFilesToZip(items, zipFolder) {
+        for (const item of items) {
+          if (item.type === 'folder' && item.children) {
+            const subFolder = zipFolder.folder(item.label);
+            await addFilesToZip(item.children, subFolder);
+          } else if (item.type === 'file') {
+            const response = await fetch(item.path);
+            const text = await response.text();
+            zipFolder.file(item.label, text);
+          }
+        }
+      }
       
-      await Promise.all(fetches);
+      await addFilesToZip(currentFiles, zip);
       
       const content = await zip.generateAsync({ type: 'blob' });
       

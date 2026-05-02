@@ -3,22 +3,35 @@ import projects from '../data/projects.json';
 import fs from 'node:fs';
 import path from 'node:path';
 
-function getProjectFiles(codeFolder) {
+function getProjectFiles(codeFolder, subPath = '') {
   if (!codeFolder) return [];
   
   try {
-    const dirPath = path.join(process.cwd(), 'public', 'code', codeFolder);
+    const dirPath = path.join(process.cwd(), 'public', 'code', codeFolder, subPath);
     if (!fs.existsSync(dirPath)) return [];
     
-    const files = fs.readdirSync(dirPath);
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
     
-    const formattedFiles = files.map(file => ({
-      path: `/code/${codeFolder}/${file}`,
-      label: file
-    }));
+    const formattedFiles = entries.map(entry => {
+      const relPath = subPath ? `${subPath}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) {
+        return {
+          type: 'folder',
+          label: entry.name,
+          children: getProjectFiles(codeFolder, relPath)
+        };
+      } else {
+        return {
+          type: 'file',
+          path: `/code/${codeFolder}/${relPath}`,
+          label: entry.name
+        };
+      }
+    });
     
-    // Sort so "main.*" files come first
     return formattedFiles.sort((a, b) => {
+      if (a.type === 'folder' && b.type === 'file') return -1;
+      if (a.type === 'file' && b.type === 'folder') return 1;
       const aIsMain = a.label.toLowerCase().startsWith('main.');
       const bIsMain = b.label.toLowerCase().startsWith('main.');
       if (aIsMain && !bIsMain) return -1;
