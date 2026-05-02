@@ -126,7 +126,7 @@
 
   /* File explorer item styling */
   .file-explorer-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded cursor-pointer transition-all duration-150 text-surface-200 hover:bg-surface-800/60 hover:text-white font-medium;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded cursor-pointer transition-all duration-150 text-surface-200 hover:bg-surface-800/60 hover:text-white font-medium w-full text-left;
   }
   .file-explorer-item.active {
     @apply bg-primary-600/20 text-primary-300 border-l-2 border-primary-500 font-semibold;
@@ -138,10 +138,10 @@
     @apply opacity-100 text-primary-400;
   }
   .file-explorer-item .file-name {
-    @apply truncate font-sans text-sm tracking-wide;
+    @apply truncate font-sans text-sm tracking-wide flex-1 min-w-0;
   }
   .file-explorer-item .file-ext {
-    @apply ml-auto text-xs uppercase tracking-wider opacity-70 font-bold flex-shrink-0;
+    @apply ml-3 text-xs uppercase tracking-wider opacity-70 font-bold flex-shrink-0;
   }
   .file-explorer-item.active .file-ext {
     @apply opacity-100 text-primary-400;
