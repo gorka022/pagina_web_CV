@@ -18,6 +18,24 @@
     "codeLang": "python"
   },
   {
+    "title": "Interest Rate Derivatives Pricing & Volatility Modeling",
+    "description": "Valuation of collateralized Interest Rate Swaps (IRS) and Caps, including implied volatility estimation using advanced market models.",
+    "longDescription": "Comprehensive quantitative project focused on the valuation of collateralized fixed-income derivatives in EUR. The scope includes the detailed pricing of a 20-year Fixed/Floating Interest Rate Swap (IRS) and an Interest Rate Cap tied to the Euribor-6M, strictly applying real-world market conventions (such as Modified Following, Target calendars, and specific day count fractions like Act/360 and 30/360). Additionally, the project involves calculating the equivalent implied volatility for the Cap structure utilizing a Shifted Log-normal (3%) model.",
+    "image": "",
+    "tags": [
+      "R",
+      "Python",
+      "VaR",
+      "CoVaR",
+      "Systemic Risk"
+    ],
+    "link": "",
+    "demo": "",
+    "featured": true,
+    "codeFolder": "market_systemic_risk",
+    "codeLang": "r"
+  },
+  {
     "title": "Market & Systemic Risk",
     "description": "Estimation of Value at Risk (VaR) and Conditional VaR (CoVaR) metrics to measure systemic risk. Analysis of spillovers and contagion between financial markets.",
     "longDescription": "This study focuses on measuring systemic risk and the interconnectedness between financial institutions. Using Delta Conditional Value at Risk (ΔCoVaR) and Quantile Regression, I analyze how the distress of one entity affects the overall market risk. The project includes the estimation of systemic risk contributions and the mapping of risk spillovers, providing a comprehensive view of financial stability and contagion channels.",
