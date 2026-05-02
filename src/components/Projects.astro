@@ -1,15 +1,24 @@
 ---
-import projects from '../data/projects.json';
-import fs from 'node:fs';
-import path from 'node:path';
+import projectsData from '../data/projects.json';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import process from 'node:process';
 
-function getProjectFiles(codeFolder, subPath = '') {
+const projects = Array.isArray(projectsData) ? projectsData : [];
+
+function getProjectFiles(codeFolder: string, subPath: string = '') {
   if (!codeFolder) return [];
   
   try {
-    const dirPath = path.join(process.cwd(), 'public', 'code', codeFolder, subPath);
+    const root = process.cwd();
+    const dirPath = path.join(root, 'public', 'code', codeFolder, subPath);
+    
     if (!fs.existsSync(dirPath)) return [];
     
+    // Ensure it's a directory
+    const stats = fs.statSync(dirPath);
+    if (!stats.isDirectory()) return [];
+
     const entries = fs.readdirSync(dirPath, { withFileTypes: true });
     
     const formattedFiles = entries.map(entry => {
@@ -29,7 +38,7 @@ function getProjectFiles(codeFolder, subPath = '') {
       }
     });
     
-    return formattedFiles.sort((a, b) => {
+    return formattedFiles.sort((a: any, b: any) => {
       if (a.type === 'folder' && b.type === 'file') return -1;
       if (a.type === 'file' && b.type === 'folder') return 1;
       const aIsMain = a.label.toLowerCase().startsWith('main.');
@@ -48,6 +57,7 @@ const projectsWithFiles = projects.map(project => ({
   ...project,
   codeFiles: getProjectFiles(project.codeFolder)
 }));
+
 ---
 
 <section id="projects" class="py-24 md:py-32 bg-white border-y border-surface-200">
