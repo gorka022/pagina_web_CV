@@ -74,7 +74,7 @@
               </svg>
               Project Files
             </h4>
-            <nav id="modal-file-list" class="space-y-2 flex flex-col">
+            <nav id="modal-file-list" class="grid grid-cols-2 sm:grid-cols-2 gap-3">
               <!-- File entries will be injected here -->
             </nav>
           </div>
@@ -126,25 +126,28 @@
 
   /* File explorer item styling */
   .file-explorer-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded cursor-pointer transition-all duration-150 text-surface-200 hover:bg-surface-800/60 hover:text-white font-medium w-full text-left;
+    @apply relative flex flex-col items-center justify-center gap-1 p-4 rounded-xl cursor-pointer transition-all duration-200 text-surface-400 hover:bg-surface-800 hover:text-white border border-surface-800/50 bg-surface-900/30 w-full;
   }
   .file-explorer-item.active {
-    @apply bg-primary-600/20 text-primary-300 border-l-2 border-primary-500 font-semibold;
+    @apply bg-primary-500/10 text-primary-300 border-primary-500/40;
   }
   .file-explorer-item .file-icon {
-    @apply w-5 h-5 flex-shrink-0 opacity-80;
+    @apply flex-shrink-0 opacity-50 transition-all duration-200;
+  }
+  .file-explorer-item:hover .file-icon {
+    @apply opacity-80;
   }
   .file-explorer-item.active .file-icon {
     @apply opacity-100 text-primary-400;
   }
   .file-explorer-item .file-name {
-    @apply truncate font-sans text-sm tracking-wide flex-1 min-w-0;
+    @apply truncate font-sans text-xs tracking-wide w-full text-center mt-2 font-medium;
   }
   .file-explorer-item .file-ext {
-    @apply ml-3 text-xs uppercase tracking-wider opacity-70 font-bold flex-shrink-0;
+    @apply absolute top-2 right-2 text-[9px] uppercase tracking-wider opacity-60 font-bold bg-surface-950 px-1.5 py-0.5 rounded border border-surface-800/50;
   }
   .file-explorer-item.active .file-ext {
-    @apply opacity-100 text-primary-400;
+    @apply opacity-100 text-primary-300 bg-primary-900/50 border-primary-500/30;
   }
 </style>
 
