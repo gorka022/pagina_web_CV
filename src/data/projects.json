@@ -18,9 +18,9 @@
     "codeLang": "python"
   },
   {
-    "title": "Market & Systemic Risk",
-    "description": "Estimation of Value at Risk (VaR) and Conditional VaR (CoVaR) metrics to measure systemic risk. Analysis of spillovers and contagion between financial markets.",
-    "longDescription": "This study focuses on measuring systemic risk and the interconnectedness between financial institutions. Using Delta Conditional Value at Risk (ΔCoVaR) and Quantile Regression, I analyze how the distress of one entity affects the overall market risk. The project includes the estimation of systemic risk contributions and the mapping of risk spillovers, providing a comprehensive view of financial stability and contagion channels.",
+    "title": "Systemic Risk & CoVaR Modeling of US Mega-Caps",
+    "description": "Quantitative assessment of systemic risk contribution for four major US stocks across key sectors. The analysis estimates dynamic Value at Risk (VaR) and $\Delta$CoVaR using Quantile Regression, Parametric GJR-GARCH, and Asymmetric CaViaR models.",
+    "longDescription": "Comprehensive quantitative analysis evaluating the systemic risk contribution of four major corporations (JPMorgan, Progressive, NVIDIA, and NextEra Energy) relative to the S&P 500 benchmark. The study compares Ordinary Least Squares (OLS) with Quantile Regression to analyze tail-risk dependencies and changing correlation structures during extreme market conditions. Furthermore, it implements advanced VaR estimation techniques, comparing Parametric GJR-GARCH with t-Student distributions against Asymmetric CaViaR models, to construct dynamic CoVaR and $\Delta$CoVaR metrics. Key findings reveal that the utility sector representative (NextEra Energy) exhibited the highest systemic risk contribution, a contagion effect severely amplified during the COVID-19 crisis. Conversely, the technology representative (NVIDIA) displayed predominantly idiosyncratic risk despite having the highest individual volatility. ",
     "image": "",
     "tags": [
       "R",
