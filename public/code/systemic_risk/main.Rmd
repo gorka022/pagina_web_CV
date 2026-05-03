@@ -1,0 +1,918 @@
+---
+title: "Tarea 2"
+author: "Gorka"
+date: "2025-12-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(moments)
+library(readxl)
+library(quantreg)
+library(rugarch)
+library(Rcpp)
+library(magrittr)
+```
+
+PREGUNTA 2:
+
+Carga y preparación de datos
+
+```{r}
+
+# Cargamos el excel
+ruta <- "JPMorganChase_Progressive_NVIDIA_NextEra.xlsx"
+df <- read_excel(ruta)
+
+# Fechas
+fechas <- as.Date(df$Date, format="%Y-%m-%d")
+fechas_vec <- fechas[-1]
+
+# Risk Free 
+rf_full <- (df$SOFR / 100) / 252
+rf_diario <- rf_full[-1] 
+
+# Calculo de Rendimientos Logaritmicos
+
+# Empresas
+r_JPM  <- diff(log(df$JPM))
+r_PGR  <- diff(log(df$PGR))
+r_NVDA <- diff(log(df$NVDA))
+r_NEE  <- diff(log(df$NEE))
+
+# Mercado 
+r_SP500 <- diff(log(df$SP500))
+
+# Construccion del Portfolio 
+r_POR <- (r_JPM + r_PGR + r_NVDA + r_NEE) / 4
+
+```
+
+
+Estadísticos
+
+```{r}
+
+# agrupamos todos los retornos en un DF
+
+df_retornos <- data.frame(
+  JPM   = r_JPM,
+  PGR   = r_PGR,
+  NVDA  = r_NVDA,
+  NEE   = r_NEE,
+  POR   = r_POR,
+  SP500 = r_SP500
+)
+
+stats <- function(x, rf) {
+  
+  # Estadisticos basicos
+  mu  <- mean(x, na.rm=T)
+  med <- median(x, na.rm=T)
+  mn  <- min(x, na.rm=T)
+  mx  <- max(x, na.rm=T)
+  sig <- sd(x, na.rm=T)
+  sk  <- skewness(x, na.rm=T)
+  ku  <- kurtosis(x, na.rm=T)
+  
+  # Anualizacion 
+  mu_anual  <- mu * 252
+  sig_anual <- sig * sqrt(252)
+  
+  # Ratio Sharpe
+  exceso <- x - rf
+  sharpe <- (mean(exceso, na.rm=T) / sd(exceso, na.rm=T)) * sqrt(252)
+  
+  
+  return(c(
+    Mediana  = med,
+    Min      = mn,
+    Max      = mx,
+    Skewness = sk,
+    Kurtosis = ku,
+    Media_An = mu_anual,
+    Vol_An   = sig_anual,
+    Sharpe   = sharpe
+  ))
+}
+
+
+matriz_stats <- sapply(df_retornos, stats, rf=rf_diario)
+tabla_stats <- t(matriz_stats)
+
+row.names(tabla_stats) <- c("JPM", "PGR", "NVDA","NEE", "POR", "SP500")
+
+
+print(round(tabla_stats, 4))
+```
+
+Boxplot
+
+```{r}
+
+
+mis_colores <- c("lightblue", "orange", "lightgreen", "khaki", "gold", "salmon")
+
+par(mar = c(5, 4, 4, 2) + 0.1)
+
+boxplot(df_retornos,
+        main = "Distribucion de Rendimientos Diarios",
+        ylab = "Rendimiento",
+        col  = mis_colores,
+        las  = 2,        
+        cex.axis = 0.8)  
+
+
+grid(nx = NA, ny = NULL, col = "gray", lty = "dotted")
+
+abline(h = 0, col = "red", lty = 2)
+
+par(mar = c(5, 4, 4, 2) + 0.1)
+```
+
+PREGUNTA 3:
+
+Estimación betas
+
+
+```{r}
+
+# Definimos los cuantiles 
+taus <- c(0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99)
+
+#calcular Betas 
+get_betas <- function(y, x) {
+  
+  # Regresion Cuantilica 
+  fit_rq <- rq(y ~ x, tau = taus)
+  
+  # Extraemos las betas 
+  betas_q <- coef(fit_rq)[2, ]
+  
+  # Regresion MCO 
+  fit_lm <- lm(y ~ x)
+  beta_mco <- coef(fit_lm)[2]
+  
+  # Ordenamos el resultado  
+
+  res <- c(betas_q[1:4], "MCO" = beta_mco, betas_q[5:7])
+  
+  return(res)
+}
+
+
+
+# Separamos los activos  del mercado 
+activos <- df_retornos[, names(df_retornos) != "SP500"]
+mercado <- df_retornos$SP500
+
+# Aplicamos la funcion 
+matriz_betas <- sapply(activos, get_betas, x = mercado)
+
+# Transponemos para que los activos esten en filas 
+tabla_betas <- t(matriz_betas)
+
+# Ajustamos nombres de columnas 
+colnames(tabla_betas) <- c("0.01", "0.05", "0.25", "0.5", "MCO", "0.75", "0.95", "0.99")
+
+print(round(tabla_betas, 4))
+
+```
+
+Gráficos betas
+
+```{r}
+
+plot_beta_dinamica <- function(y, x, nombre) {
+  
+  # Ajustamos el modelo para  cuantiles diferentes
+  fit <- rq(y ~ x, tau = seq(0.01, 0.99, by = 0.005))
+  
+  # Pintamos el resultado
+  
+  plot(summary(fit), parm = "x", 
+       main = paste("Evolución Beta -", nombre),
+       xlab = "Cuantil (Tau)", 
+       ylab = "Beta",
+       mar  = c(4, 4, 3, 2)) 
+}
+
+
+# 1. JPM
+plot_beta_dinamica(r_JPM, r_SP500, "JPM")
+
+# 2. PGR 
+plot_beta_dinamica(r_PGR, r_SP500, "PGR")
+
+# 3. NVDA 
+plot_beta_dinamica(r_NVDA, r_SP500, "NVDA")
+
+# 4. NEE 
+plot_beta_dinamica(r_NEE, r_SP500, "NEE")
+
+# 5. Cartera 
+plot_beta_dinamica(r_POR, r_SP500, "POR")
+
+
+```
+
+PREGUNTA 4:
+Paso 1:
+
+CÁLCULO DE VAR DINÁMICO
+
+```{r}
+
+# Ruta al archivo de funciones
+ruta_caviar <- "caviar_function/caviar.R"
+source(ruta_caviar)
+
+tau <- 0.01
+nombres_activos <- colnames(df_retornos)
+
+#CÁLCULO DEL VAR CAVIAR 
+df_resultados_caviar <- data.frame(matrix(ncol = length(nombres_activos), nrow = nrow(df_retornos)))
+colnames(df_resultados_caviar) <- nombres_activos
+
+for (nombre in nombres_activos) {
+  
+  # vector de rendimientos
+  r_vec <- as.numeric(df_retornos[[nombre]])
+  
+  # CaViaR  
+  fit_cav <- caviarOptim(r_vec, model = 2, pval = tau)
+  
+  
+  df_resultados_caviar[[nombre]] <- -fit_cav$VaR
+  
+}
+
+
+
+#CÁLCULO DEL VAR PARAMÉTRICO 
+
+df_resultados_param <- data.frame(matrix(ncol = length(nombres_activos), nrow = nrow(df_retornos)))
+colnames(df_resultados_param) <- nombres_activos
+
+#GJR-GARCH con t-Student
+spec_gjr <- ugarchspec(
+  mean.model = list(armaOrder = c(0, 0), include.mean = TRUE),
+  variance.model = list(model = "gjrGARCH", garchOrder = c(1, 1)),
+  distribution.model = "std" 
+)
+
+for (nombre in nombres_activos) {
+  
+  r_vec <- as.numeric(df_retornos[[nombre]])
+  
+  # Estimamos
+  fit_gjr <- ugarchfit(spec = spec_gjr, data = r_vec)
+  
+  # Calculamos VaR
+  var_garch <- quantile(fit_gjr, probs = tau)
+  
+  # Guardamos
+  df_resultados_param[[nombre]] <- as.numeric(var_garch)
+  
+}
+
+
+#GRÁFICOS
+
+
+mis_empresas <- c("JPM", "PGR", "NVDA", "NEE")
+
+for (empresa in mis_empresas) {
+  
+ 
+  mis_retornos <- df_retornos[[empresa]]
+  mi_var_cav   <- df_resultados_caviar[[empresa]]
+  mi_var_par   <- df_resultados_param[[empresa]]
+  
+  
+  min_y <- min(c(mis_retornos, mi_var_cav, mi_var_par), na.rm = TRUE)
+  max_y <- max(c(mis_retornos, mi_var_cav, mi_var_par), na.rm = TRUE)
+  
+  
+  plot(x = fechas_vec, y = mis_retornos, type = "l", col = "gray", lwd = 1,
+       ylim = c(min_y, max_y),
+       main = paste("VaR Dinámico 1% -", empresa),
+       ylab = "Retornos", xlab = "Fecha")
+  
+  #  CaViaR 
+  lines(x = fechas_vec, y = mi_var_cav, col = "blue", lwd = 1.5)
+  
+  # Paramétrico 
+  lines(x = fechas_vec, y = mi_var_par, col = "red", lwd = 1.5, lty = 2)
+  
+  # Leyenda
+  legend("bottomleft", legend = c("CaViaR", "Paramétrico"),
+         col = c("blue", "red"), lty = c(1, 2), cex = 0.7, bty = "n")
+}
+
+```
+
+Analisis VaR
+```{r}
+
+mis_empresas <- c("JPM", "PGR", "NVDA", "NEE")
+
+tabla_medias <- data.frame(
+  Empresa = mis_empresas,
+  Media_VaR_CaViaR = numeric(length(mis_empresas)),
+  Media_VaR_Parametrico = numeric(length(mis_empresas))
+)
+
+
+for (i in 1:length(mis_empresas)) {
+  empresa <- mis_empresas[i]
+  
+  # Calculamos la media del VaR CaViaR 
+  tabla_medias$Media_VaR_CaViaR[i] <- mean(df_resultados_caviar[[empresa]], na.rm = TRUE)
+  
+  # Calculamos la media del VaR Paramétrico
+  tabla_medias$Media_VaR_Parametrico[i] <- mean(df_resultados_param[[empresa]], na.rm = TRUE)
+}
+
+
+print(tabla_medias)
+```
+
+
+
+
+
+
+
+Paso 2:
+Estimación Regresión Cuantílica
+
+
+```{r}
+
+
+tau_covar <- 0.01
+mis_empresas <- c("JPM", "PGR", "NVDA", "NEE")
+
+
+# SP500
+
+# Creamos una tabla vacía 
+tabla_sp500 <- NULL 
+
+# Variable Y mercado
+y_mercado <- df_retornos$SP500
+
+for (empresa in mis_empresas) {
+  
+  # Variable X empresa 
+  x_empresa <- df_retornos[[empresa]]
+  
+  # regresión (tau = 0.01)
+  modelo <- rq(y_mercado ~ x_empresa, tau = tau_covar)
+  resumen <- summary(modelo, se = "nid") 
+  
+  b1    <- resumen$coefficients[1, 1]
+  dt_b1 <- resumen$coefficients[1, 2] 
+  
+  b2    <- resumen$coefficients[2, 1]
+  dt_b2 <- resumen$coefficients[2, 2]
+  
+  #Pseudo R2 
+  modelo_nulo <- rq(y_mercado ~ 1, tau = tau_covar)
+  r2 <- 1 - (modelo$rho / modelo_nulo$rho)
+  
+  
+  fila_nueva <- c(b1, dt_b1, b2, dt_b2, r2)
+  tabla_sp500 <- rbind(tabla_sp500, fila_nueva)
+}
+
+rownames(tabla_sp500) <- mis_empresas
+colnames(tabla_sp500) <- c("Beta1", "dt(B1)", "Beta2", "dt(B2)", "Pseudo R2")
+
+print("--- RESULTADOS SP500 ---")
+print(round(tabla_sp500, 4))
+
+
+
+#CARTERA
+
+# Creamos una tabla  
+tabla_por <- NULL
+
+y_cartera <- df_retornos$POR
+
+for (empresa in mis_empresas) {
+  
+  x_empresa <- df_retornos[[empresa]]
+  
+  # Regresión
+  modelo <- rq(y_cartera ~ x_empresa, tau = tau_covar)
+  resumen <- summary(modelo, se = "nid")
+  
+  # Extraemos datos
+  b1    <- resumen$coefficients[1, 1]
+  dt_b1 <- resumen$coefficients[1, 2]
+  b2    <- resumen$coefficients[2, 1]
+  dt_b2 <- resumen$coefficients[2, 2]
+  
+  # Pseudo R2
+  modelo_nulo <- rq(y_cartera ~ 1, tau = tau_covar)
+  r2 <- 1 - (modelo$rho / modelo_nulo$rho)
+  
+  
+  fila_nueva <- c(b1, dt_b1, b2, dt_b2, r2)
+  tabla_por <- rbind(tabla_por, fila_nueva)
+}
+
+rownames(tabla_por) <- mis_empresas
+colnames(tabla_por) <- c("Beta1", "dt(B1)", "Beta2", "dt(B2)", "Pseudo R2")
+
+print("--- RESULTADOS POR ---")
+print(round(tabla_por, 4))
+```
+
+Paso 2 :
+Significatividad
+
+```{r}
+
+tau_covar <- 0.01
+mis_empresas <- c("JPM", "PGR", "NVDA", "NEE")
+
+
+# ANÁLISIS CON SP500 
+
+
+tabla_sp500 <- NULL 
+y_mercado <- df_retornos$SP500
+
+for (empresa in mis_empresas) {
+  
+  x_empresa <- df_retornos[[empresa]]
+  
+  # Regresión Cuantílica
+  modelo <- rq(y_mercado ~ x_empresa, tau = tau_covar)
+  resumen <- summary(modelo, se = "nid") 
+  
+  # BETA 1
+  b1      <- resumen$coefficients[1, 1] 
+  dt_b1   <- resumen$coefficients[1, 2] 
+  pval_b1 <- resumen$coefficients[1, 4] 
+  
+  #BETA 2  
+  b2      <- resumen$coefficients[2, 1] 
+  dt_b2   <- resumen$coefficients[2, 2] 
+  pval_b2 <- resumen$coefficients[2, 4] 
+  
+  # Pseudo R2
+  modelo_nulo <- rq(y_mercado ~ 1, tau = tau_covar)
+  r2 <- 1 - (modelo$rho / modelo_nulo$rho)
+  
+  
+  fila_nueva <- c(b1, dt_b1, pval_b1, b2, dt_b2, pval_b2, r2)
+  tabla_sp500 <- rbind(tabla_sp500, fila_nueva)
+}
+
+rownames(tabla_sp500) <- mis_empresas
+colnames(tabla_sp500) <- c("Beta1", "dt(B1)", "P-Val(B1)", "Beta2", "dt(B2)", "P-Val(B2)", "Pseudo R2")
+
+print("RESULTADOS SP500 ")
+print(round(tabla_sp500, 4))
+
+
+
+# ANÁLISIS CON CARTERA 
+
+
+tabla_por <- NULL
+y_cartera <- df_retornos$POR
+
+for (empresa in mis_empresas) {
+  
+  x_empresa <- df_retornos[[empresa]]
+  
+  # Regresión
+  modelo <- rq(y_cartera ~ x_empresa, tau = tau_covar)
+  resumen <- summary(modelo, se = "nid")
+  
+  # BETA 1
+  b1      <- resumen$coefficients[1, 1] 
+  dt_b1   <- resumen$coefficients[1, 2] 
+  pval_b1 <- resumen$coefficients[1, 4] 
+  
+  # BETA 2
+  b2      <- resumen$coefficients[2, 1] 
+  dt_b2   <- resumen$coefficients[2, 2] 
+  pval_b2 <- resumen$coefficients[2, 4] 
+  
+  # Pseudo R2
+  modelo_nulo <- rq(y_cartera ~ 1, tau = tau_covar)
+  r2 <- 1 - (modelo$rho / modelo_nulo$rho)
+  
+  fila_nueva <- c(b1, dt_b1, pval_b1, b2, dt_b2, pval_b2, r2)
+  tabla_por <- rbind(tabla_por, fila_nueva)
+}
+
+rownames(tabla_por) <- mis_empresas
+colnames(tabla_por) <- c("Beta1", "dt(B1)", "P-Val(B1)", "Beta2", "dt(B2)", "P-Val(B2)", "Pseudo R2")
+
+print("RESULTADOS POR ")
+print(round(tabla_por, 4))
+```
+
+
+
+
+
+
+Pso 3:
+
+```{r}
+
+mis_empresas <- c("JPM", "PGR", "NVDA", "NEE")
+mis_colores  <- c("green", "blue", "orange", "purple") 
+
+# DF para guardar resultados
+df_covar_sp500 <- data.frame(matrix(NA, nrow = nrow(df_retornos), ncol = 4))
+df_covar_por   <- data.frame(matrix(NA, nrow = nrow(df_retornos), ncol = 4))
+colnames(df_covar_sp500) <- mis_empresas
+colnames(df_covar_por)   <- mis_empresas
+
+
+for (empresa in mis_empresas) {
+  
+  # SP500
+  b1 <- tabla_sp500[empresa, "Beta1"]
+  b2 <- tabla_sp500[empresa, "Beta2"]
+  var_empresa <- df_resultados_caviar[[empresa]]
+  df_covar_sp500[[empresa]] <- b1 + (b2 * var_empresa)
+  
+  # POR
+  b1_p <- tabla_por[empresa, "Beta1"]
+  b2_p <- tabla_por[empresa, "Beta2"]
+  df_covar_por[[empresa]] <- b1_p + (b2_p * var_empresa)
+}
+
+
+# GRÁFICO SP500
+
+retorno_sp500 <- df_retornos[["SP500"]]
+var_sp500_inc <- df_resultados_caviar[["SP500"]] 
+
+# Límites
+ymin <- min(df_covar_sp500, var_sp500_inc, na.rm=T)
+ymax <- max(retorno_sp500, na.rm=T)
+
+# Retornos del Índice 
+plot(x = fechas_vec, y = retorno_sp500, type = "l", col = "gray70", lwd = 1,
+     ylim = c(ymin, ymax),
+     main = "CoVaR SP500",
+     ylab = "Retornos", xlab = "Fecha")
+
+# VaR Incondicional 
+lines(x = fechas_vec, y = var_sp500_inc, col = "red", lwd = 1)
+
+# EMPRESAS
+for (i in 1:4) {
+  lines(x = fechas_vec, y = df_covar_sp500[[mis_empresas[i]]], 
+        col = mis_colores[i], lwd = 1.5)
+}
+
+# Leyenda
+legend("bottomleft", 
+       legend = c("Rendimientos", "VaR", mis_empresas),
+       col = c("gray70", "red", mis_colores),
+       lwd = c(1, 3, 1.5, 1.5, 1.5, 1.5), 
+       cex = 0.6, bty = "n", ncol = 2) # ncol=2 para que no ocupe tanto hacia arriba
+
+
+
+# GRÁFICO POR
+
+retorno_por <- df_retornos[["POR"]]
+var_por_inc <- df_resultados_caviar[["POR"]]
+
+ymin <- min(df_covar_por, var_por_inc, na.rm=T)
+ymax <- max(retorno_por, na.rm=T)
+
+#Retornos del Portfolio 
+plot(x = fechas_vec, y = retorno_por, type = "l", col = "gray70", lwd = 1,
+     ylim = c(ymin, ymax),
+     main = "CoVaR Cartera",
+     ylab = "Retornos", xlab = "Fecha")
+
+#  VaR Incondicional
+lines(x = fechas_vec, y = var_por_inc, col = "red", lwd = 1)
+
+# EMPRESAS
+for (i in 1:4) {
+  lines(x = fechas_vec, y = df_covar_por[[mis_empresas[i]]], 
+        col = mis_colores[i], lwd = 1.5)
+}
+
+legend("bottomleft", 
+       legend = c("Rendimientos", "VaR", mis_empresas),
+       col = c("gray70", "red", mis_colores),
+       lwd = c(1, 3, 1.5, 1.5, 1.5, 1.5), 
+       cex = 0.6, bty = "n", ncol = 2)
+```
+Gráfico zoom
+
+```{r}
+
+mis_empresas <- c("JPM", "PGR", "NVDA", "NEE")
+mis_colores  <- c("green", "blue", "orange", "purple") 
+
+# DataFrames 
+df_covar_sp500 <- data.frame(matrix(NA, nrow = nrow(df_retornos), ncol = 4))
+df_covar_por   <- data.frame(matrix(NA, nrow = nrow(df_retornos), ncol = 4))
+colnames(df_covar_sp500) <- mis_empresas
+colnames(df_covar_por)   <- mis_empresas
+
+
+
+for (empresa in mis_empresas) {
+  
+  # SP500
+  b1 <- tabla_sp500[empresa, "Beta1"]
+  b2 <- tabla_sp500[empresa, "Beta2"]
+  var_empresa <- df_resultados_caviar[[empresa]]
+  df_covar_sp500[[empresa]] <- b1 + (b2 * var_empresa)
+  
+  # POR
+  b1_p <- tabla_por[empresa, "Beta1"]
+  b2_p <- tabla_por[empresa, "Beta2"]
+  df_covar_por[[empresa]] <- b1_p + (b2_p * var_empresa)
+}
+
+
+# SELECCIONAR ÚLTIMOS AÑOS
+
+
+ult_años <- 3
+fecha_fin   <- max(fechas_vec)
+fecha_inicio <- fecha_fin - (365 * ult_años) 
+
+
+idx_cor <- which(fechas_vec >= fecha_inicio)
+
+fechas_grafico <- fechas_vec[idx_cor]
+
+# SP500 recortado
+retorno_sp500_graf <- df_retornos$SP500[idx_cor]
+var_sp500_graf     <- df_resultados_caviar$SP500[idx_cor]
+df_covar_sp500_graf <- df_covar_sp500[idx_cor, ]
+
+# POR recortado
+retorno_por_graf   <- df_retornos$POR[idx_cor]
+var_por_graf       <- df_resultados_caviar$POR[idx_cor]
+df_covar_por_graf   <- df_covar_por[idx_cor, ]
+
+
+
+#GRÁFICO SP500
+
+
+# límites 
+ymin <- min(df_covar_sp500_graf, var_sp500_graf, na.rm=T)
+ymax <- max(retorno_sp500_graf, na.rm=T)
+
+# FONDO
+plot(x = fechas_grafico, y = retorno_sp500_graf, type = "l", col = "gray70", lwd = 1,
+     ylim = c(ymin, ymax),
+     main = paste("CoVaR SP500 (Últimos", ult_años, "años)"),
+     ylab = "Retornos", xlab = "Fecha")
+
+# REFERENCIA
+lines(x = fechas_grafico, y = var_sp500_graf, col = "red", lwd = 1) # Grosor normal
+
+# EMPRESAS
+for (i in 1:4) {
+  lines(x = fechas_grafico, y = df_covar_sp500_graf[[mis_empresas[i]]], 
+        col = mis_colores[i], lwd = 1.5)
+}
+
+legend("bottomleft", 
+       legend = c("Retornos", "VaR ", mis_empresas),
+       col = c("gray70", "red", mis_colores),
+       lwd = c(1, 1, 1.5, 1.5, 1.5, 1.5), 
+       cex = 0.6, bty = "n", ncol = 2)
+
+
+
+#GRÁFICO (POR) 
+
+ymin <- min(df_covar_por_graf, var_por_graf, na.rm=T)
+ymax <- max(retorno_por_graf, na.rm=T)
+
+# FONDO
+plot(x = fechas_grafico, y = retorno_por_graf, type = "l", col = "gray70", lwd = 1,
+     ylim = c(ymin, ymax),
+     main = paste("CoVaR Cartera (Últimos", ult_años, "años)"),
+     ylab = "Retornos", xlab = "Fecha")
+
+# REFERENCIA
+lines(x = fechas_grafico, y = var_por_graf, col = "red", lwd = 1)
+
+# EMPRESAS
+for (i in 1:4) {
+  lines(x = fechas_grafico, y = df_covar_por_graf[[mis_empresas[i]]], 
+        col = mis_colores[i], lwd = 1.5)
+}
+
+legend("bottomleft", 
+       legend = c("Retornos", "VaR", mis_empresas),
+       col = c("gray70", "red", mis_colores),
+       lwd = c(1, 1, 1.5, 1.5, 1.5, 1.5), 
+       cex = 0.6, bty = "n", ncol = 2)
+```
+
+
+Tabla estadísticos
+
+```{r}
+
+mis_estadisticos <- function(serie) {
+  c(Media      = mean(serie, na.rm = TRUE),
+    Mediana    = median(serie, na.rm = TRUE),
+    Desv.Tipica = sd(serie, na.rm = TRUE))
+}
+
+
+# TABLA SP500 
+tabla_desc_sp500 <- NULL
+
+# VaR Incondicional  SP500 
+stats_var <- mis_estadisticos(df_resultados_caviar[["SP500"]])
+tabla_desc_sp500 <- rbind(tabla_desc_sp500, stats_var)
+
+# CoVaR empresas
+for (empresa in mis_empresas) {
+  stats_covar <- mis_estadisticos(df_covar_sp500[[empresa]])
+  tabla_desc_sp500 <- rbind(tabla_desc_sp500, stats_covar)
+}
+
+rownames(tabla_desc_sp500) <- c("VaR Incondicional (SP500)", 
+                                paste("CoVaR", mis_empresas))
+
+print("--- ESTADÍSTICOS: SP500 vs CoVaR ---")
+print(round(tabla_desc_sp500, 4))
+
+
+# TABLA POR
+tabla_desc_por <- NULL
+
+# VaR Incondicional del Portfolio
+stats_var_p <- mis_estadisticos(df_resultados_caviar[["POR"]])
+tabla_desc_por <- rbind(tabla_desc_por, stats_var_p)
+
+#CoVaR empresas
+for (empresa in mis_empresas) {
+  stats_covar_p <- mis_estadisticos(df_covar_por[[empresa]])
+  tabla_desc_por <- rbind(tabla_desc_por, stats_covar_p)
+}
+
+rownames(tabla_desc_por) <- c("VaR Incondicional (POR)", 
+                              paste("CoVaR", mis_empresas))
+
+print("--- ESTADÍSTICOS: CARTERA vs CoVaR ---")
+print(round(tabla_desc_por, 4))
+```
+
+Paso 4:
+DELTA CoVaR
+
+```{r}
+
+
+mis_empresas <- c("JPM", "PGR", "NVDA", "NEE")
+mis_colores  <- c("green", "blue", "orange", "purple")
+
+# CÁLCULO DEL DELTA CoVaR 
+
+delta_covar_sp500 <- data.frame(matrix(NA, nrow = nrow(df_retornos), ncol = 4))
+delta_covar_por   <- data.frame(matrix(NA, nrow = nrow(df_retornos), ncol = 4))
+
+colnames(delta_covar_sp500) <- mis_empresas
+colnames(delta_covar_por)   <- mis_empresas
+
+for (empresa in mis_empresas) {
+  
+  # Estado Normal 
+  var_50_normal <- median(df_retornos[[empresa]], na.rm = TRUE)
+  
+  # Betas y CoVaR Normal
+  # SP500
+  b1_sp <- tabla_sp500[empresa, "Beta1"]
+  b2_sp <- tabla_sp500[empresa, "Beta2"]
+  covar_normal_sp <- b1_sp + (b2_sp * var_50_normal)
+  
+  # POR
+  b1_por <- tabla_por[empresa, "Beta1"]
+  b2_por <- tabla_por[empresa, "Beta2"]
+  covar_normal_por <- b1_por + (b2_por * var_50_normal)
+  
+  #Calculamos DELTA CoVaR
+  delta_covar_sp500[[empresa]] <- df_covar_sp500[[empresa]] - covar_normal_sp
+  delta_covar_por[[empresa]]   <- df_covar_por[[empresa]]   - covar_normal_por
+}
+
+# PERIODO COVID
+inicio_covid <- as.Date("2020-02-15")
+fin_covid    <- as.Date("2021-02-15")
+
+idx_covid <- fechas_vec >= inicio_covid & fechas_vec <= fin_covid
+idx_pre   <- fechas_vec < inicio_covid
+idx_post  <- fechas_vec > fin_covid
+
+
+# GRÁFICOS 
+
+dibujar_delta <- function(datos_delta, titulo) {
+  
+  min_y <- min(datos_delta, na.rm = TRUE)
+  max_y <- max(datos_delta, na.rm = TRUE)
+  
+  plot(x = fechas_vec, y = datos_delta[[mis_empresas[1]]], type = "n",
+       ylim = c(min_y, max_y),
+       main = titulo,
+       ylab = "Delta CoVaR", xlab = "Fecha")
+  
+  # Franja COVID
+  rect(xleft = inicio_covid, ybottom = min_y, xright = fin_covid, ytop = max_y, 
+       col = "gray70", border = NA)
+  
+  # Líneas empresas
+  for (i in 1:4) {
+    lines(x = fechas_vec, y = datos_delta[[mis_empresas[i]]], 
+          col = mis_colores[i], lwd = 1.5)
+  }
+  
+  legend("bottomleft", legend = c("Periodo COVID", mis_empresas),
+         fill = c("gray70", NA, NA, NA, NA),
+         col = c(NA, mis_colores),
+         lty = c(NA, 1, 1, 1, 1), lwd = c(NA, 1.5, 1.5, 1.5, 1.5),
+         cex = 0.7, bty = "n", ncol = 2)
+  
+  abline(h = 0, col = "black", lty = 2)
+}
+
+
+dibujar_delta(delta_covar_sp500, "Delta CoVaR SP500")
+dibujar_delta(delta_covar_por,   "Delta CoVaR Cartera")
+
+
+
+# TABLAS 
+
+
+crear_tabla_covid <- function(datos_delta) {
+  tabla <- NULL
+  for (empresa in mis_empresas) {
+    d <- datos_delta[[empresa]]
+    fila <- c(mean(d[idx_pre], na.rm=T), 
+              mean(d[idx_covid], na.rm=T), 
+              mean(d[idx_post], na.rm=T), 
+              mean(d, na.rm=T))
+    tabla <- rbind(tabla, fila)
+  }
+  colnames(tabla) <- c("Pre-COVID", "COVID", "Post-COVID", "Total")
+  rownames(tabla) <- mis_empresas
+  return(tabla)
+}
+
+print("--- ANÁLISIS COVID: Delta CoVaR SP500 ---")
+print(round(crear_tabla_covid(delta_covar_sp500), 5))
+
+print("--- ANÁLISIS COVID: Delta CoVaR POR ---")
+print(round(crear_tabla_covid(delta_covar_por), 5))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

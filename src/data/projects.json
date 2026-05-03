@@ -14,7 +14,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFolder": "portfolio_management",
+    "codeFolder": "efficient_frontier",
     "codeLang": "python"
   },
   {
@@ -32,7 +32,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFolder": "market_systemic_risk",
+    "codeFolder": "interest_rates",
     "codeLang": "python"
   },
   {
@@ -50,7 +50,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFolder": "market_systemic_risk",
+    "codeFolder": "systemic_risk",
     "codeLang": "r"
   },
   {
@@ -68,7 +68,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFolder": "derivatives_valuation",
+    "codeFolder": "option_pricing",
     "codeLang": "python"
   },
   {
@@ -86,7 +86,7 @@
     "link": "",
     "demo": "",
     "featured": true,
-    "codeFolder": "time_series_analysis",
+    "codeFolder": "time_series_macro",
     "codeLang": "r"
   }
 ]
