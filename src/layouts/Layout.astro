@@ -1,18 +1,18 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const { 
-  title = 'Portfolio — Quantitative Finance & Risk Analyst',
-  description = 'Professional portfolio and CV of a Quantitative Finance and Risk Analyst specializing in Python, R, and financial modeling.'
+const {
+  title = "Gorka Crespo Bravo — Quantitative Finance Analyst",
+  description = "Quantitative Finance Analyst Portfolio.",
 } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
@@ -25,26 +25,28 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
-  <body class="bg-surface-50 text-surface-900 min-h-screen antialiased overflow-x-hidden">
+  <body
+    class="bg-surface-50 text-surface-900 min-h-screen antialiased overflow-x-hidden"
+  >
     <slot />
-    
+
     <!-- Scroll animation observer -->
     <script is:inline>
       const observerOptions = {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        rootMargin: "0px 0px -50px 0px",
       };
-      
+
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in-up');
+            entry.target.classList.add("animate-fade-in-up");
             observer.unobserve(entry.target);
           }
         });
       }, observerOptions);
-      
-      document.querySelectorAll('[data-animate]').forEach(el => {
+
+      document.querySelectorAll("[data-animate]").forEach((el) => {
         observer.observe(el);
       });
     </script>
