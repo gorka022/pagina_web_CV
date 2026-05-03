@@ -156,6 +156,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" is:inline></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" is:inline></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js" is:inline></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js" is:inline></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js" is:inline></script>
 
 <!-- Load JSZip for folder downloads -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" is:inline></script>
@@ -202,8 +204,32 @@
   // Get language from file extension
   function getLangFromFile(filePath) {
     const ext = getFileExt(filePath);
-    const langMap = { 'py': 'python', 'r': 'r', 'R': 'r', 'js': 'javascript', 'ts': 'typescript', 'sql': 'sql', 'sh': 'bash', 'md': 'markdown' };
+    if (ext === 'ipynb') return 'python'; // Default to python for notebooks
+    const langMap = { 'py': 'python', 'r': 'r', 'R': 'r', 'Rmd': 'r', 'rmd': 'r', 'cpp': 'cpp', 'js': 'javascript', 'ts': 'typescript', 'sql': 'sql', 'sh': 'bash', 'md': 'markdown' };
     return langMap[ext] || currentLang || 'python';
+  }
+
+  // Helper to format .ipynb content
+  function formatNotebook(jsonText) {
+    try {
+      const nb = JSON.parse(jsonText);
+      let combined = '';
+      const nbLang = nb.metadata?.kernelspec?.language || 'python';
+      const commentChar = (nbLang === 'r' || nbLang === 'R') ? '#' : '#'; // Both use #
+      
+      nb.cells.forEach((cell, idx) => {
+        const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+        if (cell.cell_type === 'markdown') {
+          const lines = source.split('\n');
+          combined += lines.map(line => line.trim() ? `${commentChar} ${line}` : commentChar).join('\n') + '\n\n';
+        } else if (cell.cell_type === 'code') {
+          combined += source + '\n\n';
+        }
+      });
+      return { text: combined, lang: nbLang.toLowerCase() };
+    } catch (e) {
+      return { text: jsonText, lang: 'json' };
+    }
   }
 
   // File icon SVG based on extension
@@ -275,23 +301,31 @@
     currentCode = '';
 
     const fileName = file.path.split('/').pop();
-    const fileLang = getLangFromFile(file.path);
+    let fileLang = getLangFromFile(file.path);
     fileInfo.textContent = fileName;
 
     try {
       const response = await fetch(file.path);
       if (!response.ok) throw new Error('Failed to fetch');
-      currentCode = await response.text();
+      let text = await response.text();
+
+      if (fileName.endsWith('.ipynb')) {
+        const processed = formatNotebook(text);
+        text = processed.text;
+        fileLang = processed.lang === 'r' ? 'r' : 'python';
+      }
 
       // Configure Prism
       codeEl.className = 'language-' + fileLang + ' text-sm leading-relaxed !p-5';
-      codeEl.textContent = currentCode;
+      codeEl.textContent = text;
+      currentCode = text; // Update currentCode for copy/download
+
       if (window.Prism) {
         Prism.highlightElement(codeEl);
       }
 
-      const lineCount = currentCode.split('\n').length;
-      const sizeKB = (new Blob([currentCode]).size / 1024).toFixed(1);
+      const lineCount = text.split('\n').length;
+      const sizeKB = (new Blob([text]).size / 1024).toFixed(1);
       fileInfo.textContent = fileName + ' — ' + lineCount + ' lines · ' + sizeKB + ' KB';
 
       loading.classList.add('hidden');
