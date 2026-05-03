@@ -2,70 +2,80 @@
 import profile from '../data/profile.json';
 ---
 
-<footer id="contact" class="relative py-24 md:py-32 bg-surface-950 text-white">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<footer id="contact" class="relative py-24 md:py-32 bg-surface-950 text-white overflow-hidden">
+  <!-- Decorative background element -->
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
+  
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <!-- Section header -->
-    <div class="mb-16 text-center" data-animate>
-      <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tight mb-4">Contact</h2>
-      <div class="h-px w-24 bg-primary-600 mx-auto mb-6"></div>
+    <div class="mb-16 md:mb-24 text-center" data-animate>
+      <h2 class="text-xs font-bold uppercase tracking-[0.3em] text-primary-500 mb-4">Get in touch</h2>
+      <h3 class="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">Contact</h3>
     </div>
 
-    <!-- Contact Info Centered -->
-    <div class="flex flex-col items-center justify-center gap-12" data-animate>
+    <!-- Contact Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-animate>
       
-      <!-- Email -->
-      <div class="flex flex-col items-center text-center group">
-        <div class="w-16 h-16 mb-4 rounded-sm bg-primary-900 border border-primary-800 flex items-center justify-center text-primary-400 group-hover:bg-primary-800 group-hover:text-primary-300 transition-colors">
-          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+      <!-- Email Card -->
+      <div class="group relative p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-primary-500/50 transition-all duration-300">
+        <div class="absolute inset-0 bg-primary-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10">
+          <div class="w-12 h-12 mb-6 rounded-sm bg-primary-900/50 flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p class="text-[10px] font-black uppercase tracking-widest text-surface-500 mb-2">Email</p>
+          <a href={`mailto:${profile.email}`} class="text-white hover:text-primary-400 font-bold break-all transition-colors">
+            {profile.email}
+          </a>
         </div>
-        <p class="text-xs font-bold uppercase tracking-wider text-surface-400 mb-2">Email</p>
-        <a href={`mailto:${profile.email}`} class="text-white hover:text-primary-400 text-lg font-medium transition-colors">
-          {profile.email}
-        </a>
       </div>
 
-
-      
-      <!-- LinkedIn -->
+      <!-- LinkedIn Card -->
       {profile.social.linkedin && (
-        <div class="flex flex-col items-center text-center group">
-          <a href={profile.social.linkedin} target="_blank" rel="noopener noreferrer" class="w-16 h-16 mb-4 rounded-sm bg-surface-800 border border-surface-700 flex items-center justify-center text-surface-300 hover:bg-[#0077b5] hover:border-[#0077b5] hover:text-white transition-colors" aria-label="LinkedIn">
-            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-            </svg>
-          </a>
-          <p class="text-xs font-bold uppercase tracking-wider text-surface-400 mb-2">LinkedIn</p>
-          <a href={profile.social.linkedin} target="_blank" rel="noopener noreferrer" class="text-white hover:text-[#0077b5] text-lg font-medium transition-colors">
-            Connect
-          </a>
+        <div class="group relative p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-[#0077b5]/50 transition-all duration-300">
+          <div class="absolute inset-0 bg-[#0077b5]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="relative z-10">
+            <div class="w-12 h-12 mb-6 rounded-sm bg-surface-800 flex items-center justify-center text-surface-400 group-hover:bg-[#0077b5] group-hover:text-white group-hover:scale-110 transition-all">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-surface-500 mb-2">LinkedIn</p>
+            <a href={profile.social.linkedin} target="_blank" rel="noopener noreferrer" class="text-white hover:text-[#0077b5] font-bold transition-colors">
+              Professional Profile
+            </a>
+          </div>
         </div>
       )}
 
-
-
-
-
-      <!-- Location -->
-      <div class="flex flex-col items-center text-center group">
-        <div class="w-16 h-16 mb-4 rounded-sm bg-primary-900 border border-primary-800 flex items-center justify-center text-primary-400 group-hover:bg-primary-800 group-hover:text-primary-300 transition-colors">
-          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+      <!-- Location Card -->
+      <div class="group relative p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-primary-500/50 transition-all duration-300">
+        <div class="absolute inset-0 bg-primary-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10">
+          <div class="w-12 h-12 mb-6 rounded-sm bg-primary-900/50 flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <p class="text-[10px] font-black uppercase tracking-widest text-surface-500 mb-2">Location</p>
+          <p class="text-white font-bold transition-colors uppercase tracking-wider">{profile.location}</p>
         </div>
-        <p class="text-xs font-bold uppercase tracking-wider text-surface-400 mb-2">Location</p>
-        <p class="text-white text-lg font-medium">{profile.location}</p>
       </div>
 
-
     </div>
+
     <!-- Footer bottom -->
-    <div class="mt-32 pt-8 border-t border-surface-800">
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <p class="text-sm text-surface-400 font-medium">
-          © {new Date().getFullYear()} {profile.name}. All rights reserved.
+    <div class="mt-24 md:mt-32 pt-8 border-t border-surface-800">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-sm bg-primary-600 flex items-center justify-center text-white font-bold text-xs">GCB</div>
+          <span class="text-sm font-black uppercase tracking-widest text-surface-400">{profile.name}</span>
+        </div>
+        <p class="text-[10px] uppercase tracking-widest text-surface-500 font-bold">
+          © {new Date().getFullYear()} — Built with Astro & Tailwind
         </p>
       </div>
     </div>
