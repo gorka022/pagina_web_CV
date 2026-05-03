@@ -18,9 +18,9 @@
     "codeLang": "python"
   },
   {
-    "title": "Systemic Risk & CoVaR Modeling of US Mega-Caps",
-    "description": "Quantitative assessment of systemic risk contribution for four major US stocks across key sectors. The analysis estimates dynamic Value at Risk (VaR) and ΔCoVaR using Quantile Regression, Parametric GJR-GARCH, and Asymmetric CaViaR models.",
-    "longDescription": "Comprehensive quantitative analysis evaluating the systemic risk contribution of four major corporations (JPMorgan, Progressive, NVIDIA, and NextEra Energy) relative to the S&P 500 benchmark. The study compares Ordinary Least Squares (OLS) with Quantile Regression to analyze tail-risk dependencies and changing correlation structures during extreme market conditions. Furthermore, it implements advanced VaR estimation techniques, comparing Parametric GJR-GARCH with t-Student distributions against Asymmetric CaViaR models, to construct dynamic CoVaR and ΔCoVaR metrics. Key findings reveal that the utility sector representative (NextEra Energy) exhibited the highest systemic risk contribution, a contagion effect severely amplified during the COVID-19 crisis. Conversely, the technology representative (NVIDIA) displayed predominantly idiosyncratic risk despite having the highest individual volatility. ",
+    "title": "Systemic Risk & CoVaR Modeling",
+    "description": "An analysis of how four major US companies affect the overall risk of the stock market during extreme financial conditions.",
+    "longDescription": "This analysis measures the ``domino effect'' that four major companies (JPMorgan, Progressive, NVIDIA, and NextEra Energy) could have on the S&P 500 during a market crash. Using statistical models, the project evaluates how risk spreads across sectors in extreme scenarios. The results revealed an interesting insight: despite NVIDIA having the most volatile stock, its risk is mostly isolated. In contrast, the utility company (NextEra Energy) actually poses the highest contagion risk to the wider market, an effect that was clearly amplified during the COVID-19 crisis.",
     "image": "",
     "tags": [
       "R",
@@ -36,9 +36,9 @@
     "codeLang": "r"
   },
   {
-    "title": "Derivatives Valuation",
-    "description": "Options valuation using the Black-Scholes model and Monte Carlo simulation. Sensitivity analysis through the Greeks (Delta, Gamma, Vega, Theta).",
-    "longDescription": "A comprehensive tool for pricing financial derivatives. It implements the closed-form Black-Scholes-Merton model for European options and Monte Carlo simulation for path-dependent options. The project emphasizes 'The Greeks'—Delta, Gamma, Theta, Vega, and Rho—to perform sensitivity analysis and manage portfolio risk. It also features implied volatility calculations using the Newton-Raphson numerical method.",
+    "title": "Exotic Options Pricing via Monte Carlo Simulation",
+    "description": "A computational finance project using Monte Carlo simulations to calculate the fair value of complex derivatives, such as Basket and Barrier options.",
+    "longDescription": "This project uses Monte Carlo simulations to estimate the price of complex financial products. It focuses on two main types: Basket Options, whose value depends on a group of correlated assets, and Barrier Options, which only pay out if the asset's price stays within certain limits over time. Beyond just calculating prices, the project analyzes the code's efficiency, finding the right balance between the number of simulated scenarios and computational speed to minimize errors and get accurate results.",
     "image": "",
     "tags": [
       "Python",
@@ -54,9 +54,9 @@
     "codeLang": "python"
   },
   {
-    "title": "Time Series Analysis",
-    "description": "Estimation of ARIMA and VAR models for financial time series forecasting. Stationarity diagnostics, cointegration, and impulse-response analysis.",
-    "longDescription": "This econometric project explores advanced time series modeling for financial forecasting. It covers the complete workflow: from stationarity testing (ADF, KPSS) and seasonality adjustment to the estimation of ARIMA (for univariate) and VAR (for multivariate) models. The analysis includes Granger causality tests, impulse-response functions (IRF), and variance decomposition to understand the dynamic relationships between economic variables.",
+    "title": "Macroeconomic VAR Analysis: Evaluating Monetary Policy Shocks",
+    "description": "An econometric analysis project using Vector Autoregression (VAR) and Impulse Response Functions (IRFs) to measure the impact of Federal Reserve interest rate changes on key economic indicators.",
+    "longDescription": "This project models the dynamic relationships between major macroeconomic variables—specifically inflation, unemployment, federal interest rates, and 10-year treasury bonds—using a Vector Autoregression (VAR) framework. After determining the optimal lag structure using the Akaike Information Criterion (AIC), it applies structural identification techniques like Cholesky decomposition and Monte Carlo-based sign restrictions to isolate monetary policy shocks. Ultimately, the project generates Impulse Response Function (IRF) plots to visualize how sudden shifts in interest rates ripple through the broader economy over a 24-month horizon.",
     "image": "",
     "tags": [
       "R",
@@ -73,8 +73,8 @@
   },
   {
     "title": "Interest Rate Derivatives Pricing & Volatility Modeling",
-    "description": "Valuation of collateralized Interest Rate Swaps (IRS) and Caps, including implied volatility estimation using advanced market models.",
-    "longDescription": "Comprehensive quantitative project focused on the valuation of collateralized fixed-income derivatives in EUR. The scope includes the detailed pricing of a 20-year Fixed/Floating Interest Rate Swap (IRS) and an Interest Rate Cap tied to the Euribor-6M, strictly applying real-world market conventions (such as Modified Following, Target calendars, and specific day count fractions like Act/360 and 30/360). Additionally, the project involves calculating the equivalent implied volatility for the Cap structure utilizing a Shifted Log-normal (3%) model.",
+    "description": "Calculating the fair value of complex interest rate products, such as Swaps and Caps, using real-world financial models.",
+    "longDescription": "This analysis focuses on determining the accurate price of long-term fixed-income products, specifically a 20-year Interest Rate Swap and an Interest Rate Cap linked to the Euribor. Rather than relying on purely theoretical math, the valuation applies real banking conventions, trading calendars, and market volatility models. This ensures the pricing reflects actual market conditions and provides a realistic view of the risks and costs associated with long-term interest rate fluctuations.",
     "image": "",
     "tags": [
       "Python",
