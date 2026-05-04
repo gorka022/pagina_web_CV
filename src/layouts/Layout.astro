@@ -4,12 +4,35 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  canonicalURL?: string;
+  keywords?: string;
 }
 
 const {
   title = "Gorka Crespo Bravo — Quantitative Finance Analyst",
-  description = "Quantitative Finance Analyst Portfolio.",
+  description = "Gorka Crespo Bravo's professional portfolio. Quantitative Finance Analyst specializing in Banking, Asset Management, and Data Science.",
+  image = "/images/og-image.png", // Default OG image
+  canonicalURL = Astro.url.href,
+  keywords = "Gorka Crespo Bravo, Gorka Crespo, Quantitative Finance, Banking, Asset Management, Portfolio Management, Data Science, Python, R, Finance Analyst",
 } = Astro.props;
+
+// JSON-LD for Person Schema
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Gorka Crespo Bravo",
+  "alternateName": "Gorka Crespo",
+  "url": Astro.site || Astro.url.origin,
+  "image": new URL(image, Astro.url.origin).href,
+  "jobTitle": "Quantitative Finance Analyst",
+  "sameAs": [
+    "https://www.linkedin.com/in/gorkacrespobravo/",
+    // Add other social links if available
+  ],
+  "description": description,
+  "knowsAbout": ["Quantitative Finance", "Banking", "Asset Management", "Data Science", "Python", "R"]
+};
 ---
 
 <!doctype html>
@@ -17,10 +40,36 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Primary Meta Tags -->
     <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="Gorka Crespo Bravo" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url).href} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url).href} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
