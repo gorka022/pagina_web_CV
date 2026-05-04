@@ -15,19 +15,8 @@ import recommendations from '../data/recommendations.json';
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       {recommendations.map((rec) => (
-        <div class="glass p-8 rounded-sm relative group hover:border-primary-500 transition-all duration-300" data-animate>
-          {/* Quote Icon Background */}
-          <div class="absolute top-4 right-8 text-surface-100 group-hover:text-primary-50 transition-colors duration-300 -z-0">
-            <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C15.4647 8 15.017 8.44772 15.017 9V12C15.017 12.5523 14.5693 13 14.017 13H13.017V21H14.017ZM6.017 21H7.017V13H6.017C5.46472 13 5.017 12.5523 5.017 12V9C5.017 8.44772 5.46472 8 6.017 8H9.017C9.56928 8 10.017 8.44772 10.017 9V15C10.017 15.5523 9.56928 16 9.017 16H6.017C4.91243 16 4.017 16.8954 4.017 18V21H6.017Z" />
-            </svg>
-          </div>
-
-          <div class="relative z-10">
-            <p class="text-surface-600 italic leading-relaxed mb-8 text-lg">
-              "{rec.text}"
-            </p>
-
+        <div class="glass p-6 rounded-sm relative group hover:border-primary-500 transition-all duration-300" data-animate>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div class="flex items-center gap-4">
               {rec.avatar && (
                 <img src={rec.avatar} alt={rec.name} class="w-12 h-12 rounded-full object-cover border border-surface-200" />
@@ -56,19 +45,16 @@ import recommendations from '../data/recommendations.json';
 
             {/* View PDF Button */}
             {rec.pdfUrl && (
-              <div class="mt-8 pt-6 border-t border-surface-100 flex justify-end">
-                <a 
-                  href={rec.pdfUrl} 
-                  target="_blank" 
-                  class="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all duration-300"
-                >
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 9h1.5m1.5 0H13m-4 4h1.5m1.5 0H13m-4 4h1.5m1.5 0H13" />
-                  </svg>
-                  Ver PDF
-                </a>
-              </div>
+              <a 
+                href={rec.pdfUrl} 
+                target="_blank" 
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                Ver PDF
+              </a>
             )}
           </div>
         </div>
