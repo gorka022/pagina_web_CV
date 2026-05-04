@@ -76,10 +76,9 @@ import recommendations from "../data/recommendations.json";
 
               {/* View PDF Button */}
               {rec.pdfUrl && (
-                <a
-                  href={rec.pdfUrl}
-                  target="_blank"
-                  class="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap"
+                <button
+                  onclick={`openPDFModal('${rec.pdfUrl}', 'Recommendation Letter - ${rec.name}')`}
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-primary-50 text-primary-600 hover:bg-primary-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer"
                 >
                   <svg
                     class="w-4 h-4"
@@ -95,7 +94,7 @@ import recommendations from "../data/recommendations.json";
                     />
                   </svg>
                   View PDF
-                </a>
+                </button>
               )}
             </div>
           </div>
