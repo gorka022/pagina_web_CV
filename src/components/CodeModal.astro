@@ -441,6 +441,9 @@
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 
+    // Push a history state so the browser back button can close the modal
+    history.pushState({ modal: 'code' }, '');
+
     requestAnimationFrame(function() {
       backdrop.classList.remove('opacity-0');
       backdrop.classList.add('opacity-100');
@@ -473,7 +476,7 @@
     }
   };
 
-  function closeModal() {
+  function closeModal(fromPopstate) {
     backdrop.classList.remove('opacity-100');
     backdrop.classList.add('opacity-0');
     content.classList.remove('scale-100', 'opacity-100');
@@ -483,13 +486,25 @@
       modal.classList.add('hidden');
       document.body.style.overflow = '';
     }, 300);
+
+    // If closed by button/backdrop/Escape (not browser back), pop the history state
+    if (!fromPopstate) {
+      history.back();
+    }
   }
 
-  closeBtn.addEventListener('click', closeModal);
-  backdrop.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', function() { closeModal(false); });
+  backdrop.addEventListener('click', function() { closeModal(false); });
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-      closeModal();
+      closeModal(false);
+    }
+  });
+
+  // Browser back button closes the modal
+  window.addEventListener('popstate', function(e) {
+    if (!modal.classList.contains('hidden')) {
+      closeModal(true);
     }
   });
 

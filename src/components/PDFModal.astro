@@ -62,6 +62,9 @@
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 
+    // Push a history state so the back button can close the modal
+    history.pushState({ modal: 'pdf' }, '');
+
     // Animation
     requestAnimationFrame(() => {
       backdrop.classList.remove('opacity-0');
@@ -79,7 +82,7 @@
     };
   };
 
-  function closeModal() {
+  function closeModal(fromPopstate) {
     backdrop.classList.remove('opacity-100');
     backdrop.classList.add('opacity-0');
     content.classList.remove('scale-100', 'opacity-100');
@@ -90,15 +93,29 @@
       frame.src = '';
       document.body.style.overflow = '';
     }, 300);
+
+    // If closed by button/backdrop (not by browser back), navigate back
+    // to remove the pushed state from the history stack
+    if (!fromPopstate) {
+      history.back();
+    }
   }
 
-  closeBtn.addEventListener('click', closeModal);
-  backdrop.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', () => closeModal(false));
+  backdrop.addEventListener('click', () => closeModal(false));
   
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-      closeModal();
+      closeModal(false);
     }
   });
+
+  // Browser back button
+  window.addEventListener('popstate', (e) => {
+    if (!modal.classList.contains('hidden')) {
+      closeModal(true);
+    }
+  });
+
 })();
 </script>
