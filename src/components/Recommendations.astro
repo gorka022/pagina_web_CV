@@ -4,14 +4,14 @@ import recommendations from "../data/recommendations.json";
 
 <section
   id="recommendations"
-  class="py-24 md:py-32 bg-surface-50 text-surface-900 border-y border-surface-200"
+  class="py-14 sm:py-20 md:py-28 bg-surface-50 text-surface-900 border-y border-surface-200"
 >
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Section header -->
-    <div class="mb-16" data-animate>
+    <div class="mb-10 sm:mb-16" data-animate>
       <div class="flex items-center gap-4 mb-4">
         <h2
-          class="text-3xl md:text-4xl font-black text-surface-900 uppercase tracking-tight"
+          class="text-2xl sm:text-3xl md:text-4xl font-black text-surface-900 uppercase tracking-tight"
         >
           Recommendation Letters
         </h2>
@@ -22,11 +22,11 @@ import recommendations from "../data/recommendations.json";
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
       {
         recommendations.map((rec) => (
           <div
-            class="glass p-6 rounded-sm relative group hover:border-primary-500 transition-all duration-300"
+            class="glass p-4 sm:p-6 rounded-sm relative group hover:border-primary-500 transition-all duration-300"
             data-animate
           >
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">

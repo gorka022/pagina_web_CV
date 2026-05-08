@@ -175,3 +175,21 @@ input:focus, textarea:focus {
 html.dark .glow {
   box-shadow: 0 0 60px -10px rgba(139, 92, 246, 0.25);
 }
+
+/* ===== RESPONSIVE UTILITIES ===== */
+/* Prevent horizontal overflow on all screen sizes */
+* {
+  min-width: 0;
+}
+
+.section-subtitle {
+  @apply text-surface-700 text-base sm:text-lg mb-8 sm:mb-12;
+}
+
+/* Tighten section titles on small screens */
+@media (max-width: 479px) {
+  .section-title {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.2;
+  }
+}

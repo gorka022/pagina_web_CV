@@ -3,12 +3,12 @@ import experience from '../data/experience.json';
 import profile from '../data/profile.json';
 ---
 
-<section id="experience" class="py-24 md:py-32 bg-surface-50 text-surface-900 border-y border-surface-200">
+<section id="experience" class="py-14 sm:py-20 md:py-28 bg-surface-50 text-surface-900 border-y border-surface-200">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Section header -->
-    <div class="mb-16" data-animate>
+    <div class="mb-10 sm:mb-16" data-animate>
       <div class="flex items-center gap-4 mb-4">
-        <h2 class="text-3xl md:text-4xl font-black text-surface-900 uppercase tracking-tight">Professional Experience</h2>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-surface-900 uppercase tracking-tight">Professional Experience</h2>
         <div class="h-px flex-1 bg-surface-200"></div>
       </div>
       <p class="text-lg text-surface-600">My academic and professional background in the world of finance.</p>
@@ -44,7 +44,7 @@ import profile from '../data/profile.json';
 
             {/* Card */}
             <div class={`ml-12 md:ml-0 md:w-[calc(50%-2rem)] ${index % 2 === 0 ? 'md:mr-auto' : 'md:ml-auto'}`}>
-              <div class="glass rounded-sm p-6 md:p-8 hover:shadow-md transition-shadow duration-200 group border-l-4 border-l-transparent hover:border-l-primary-500">
+              <div class="glass rounded-sm p-4 sm:p-6 md:p-8 hover:shadow-md transition-shadow duration-200 group border-l-4 border-l-transparent hover:border-l-primary-500">
                 {/* Type + Period */}
                 <div class="flex flex-wrap items-center gap-4 mb-3 text-xs font-bold uppercase tracking-wider text-surface-500">
                   <span class="flex items-center gap-1.5">
@@ -77,7 +77,7 @@ import profile from '../data/profile.json';
     </div>
 
     <!-- Skills and Languages (Moved from Hero) -->
-    <div class="mt-24 border-t border-surface-200 pt-16" data-animate>
+    <div class="mt-12 sm:mt-20 border-t border-surface-200 pt-10 sm:pt-14" data-animate>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         <!-- Tech stack pills -->
         <div>

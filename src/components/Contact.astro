@@ -2,22 +2,22 @@
 import profile from '../data/profile.json';
 ---
 
-<footer id="contact" class="relative py-24 md:py-32 bg-surface-950 text-white overflow-hidden">
+<footer id="contact" class="relative py-14 sm:py-20 md:py-28 bg-surface-950 text-white overflow-hidden">
   <!-- Decorative background element -->
   <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
   
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <!-- Section header -->
-    <div class="mb-16 md:mb-24 text-center" data-animate>
+    <div class="mb-10 sm:mb-16 md:mb-24 text-center" data-animate>
       <h2 class="text-xs font-bold uppercase tracking-[0.3em] text-primary-500 mb-4">Get in touch</h2>
-      <h3 class="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">Contact</h3>
+      <h3 class="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight">Contact</h3>
     </div>
 
     <!-- Contact Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-animate>
       
       <!-- Email Card -->
-      <div class="group relative p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-primary-500/50 transition-all duration-300">
+      <div class="group relative p-5 sm:p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-primary-500/50 transition-all duration-300">
         <div class="absolute inset-0 bg-primary-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10">
           <div class="w-12 h-12 mb-6 rounded-sm bg-primary-900/50 flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform">
@@ -34,7 +34,7 @@ import profile from '../data/profile.json';
 
       <!-- LinkedIn Card -->
       {profile.social.linkedin && (
-        <div class="group relative p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-[#0077b5]/50 transition-all duration-300">
+        <div class="group relative p-5 sm:p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-[#0077b5]/50 transition-all duration-300">
           <div class="absolute inset-0 bg-[#0077b5]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div class="relative z-10">
             <div class="w-12 h-12 mb-6 rounded-sm bg-surface-800 flex items-center justify-center text-surface-400 group-hover:bg-[#0077b5] group-hover:text-white group-hover:scale-110 transition-all">
@@ -51,7 +51,7 @@ import profile from '../data/profile.json';
       )}
 
       <!-- Location Card -->
-      <div class="group relative p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-primary-500/50 transition-all duration-300">
+      <div class="group relative p-5 sm:p-8 bg-surface-900/50 border border-surface-800 rounded-sm hover:border-primary-500/50 transition-all duration-300">
         <div class="absolute inset-0 bg-primary-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10">
           <div class="w-12 h-12 mb-6 rounded-sm bg-primary-900/50 flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform">
@@ -68,7 +68,7 @@ import profile from '../data/profile.json';
     </div>
 
     <!-- Footer bottom -->
-    <div class="mt-24 md:mt-32 pt-8 border-t border-surface-800">
+    <div class="mt-12 sm:mt-20 md:mt-24 pt-8 border-t border-surface-800">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-sm bg-primary-600 flex items-center justify-center text-white font-bold text-xs">GCB</div>
