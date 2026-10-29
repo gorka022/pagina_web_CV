@@ -10,11 +10,11 @@ interface Props {
 }
 
 const {
-  title = "Gorka Crespo Bravo — Quantitative Finance Analyst",
-  description = "Gorka Crespo Bravo's professional portfolio. Quantitative Finance Analyst specializing in Banking, Asset Management, and Data Science.",
+  title = "Gorka Crespo Bravo — Quantitative Finance · MSc & PhD Researcher",
+  description = "Gorka Crespo Bravo, MSc in Banking and Quantitative Finance and part-time PhD candidate at UPV/EHU. Risk measurement, portfolio construction and financial econometrics in Python and R.",
   image = "/images/og-image.png", // Default OG image
   canonicalURL = Astro.url.href,
-  keywords = "Gorka Crespo Bravo, Gorka Crespo, Quantitative Finance, Banking, Asset Management, Portfolio Management, Data Science, Python, R, Finance Analyst",
+  keywords = "Gorka Crespo Bravo, Gorka Crespo, Quantitative Finance, Banking, Asset Management, Portfolio Management, Risk Management, Financial Econometrics, Data Science, Python, R",
 } = Astro.props;
 
 // JSON-LD for Person Schema
@@ -25,7 +25,7 @@ const personSchema = {
   "alternateName": "Gorka Crespo",
   "url": Astro.site || Astro.url.origin,
   "image": new URL(image, Astro.url.origin).href,
-  "jobTitle": "Quantitative Finance Analyst",
+  "jobTitle": "PhD Candidate in Quantitative Finance",
   "sameAs": [
     "https://www.linkedin.com/in/gorkacrespobravo/",
     // Add other social links if available
@@ -40,6 +40,7 @@ const personSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
     
     <!-- Primary Meta Tags -->
     <title>{title}</title>
@@ -73,10 +74,17 @@ const personSchema = {
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" />
   </head>
   <body
     class="bg-surface-50 text-surface-900 min-h-screen antialiased overflow-x-hidden"
   >
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-sm focus:bg-primary-600 focus:text-white focus:text-sm focus:font-semibold"
+    >
+      Skip to content
+    </a>
     <slot />
 
     <!-- Scroll animation observer -->

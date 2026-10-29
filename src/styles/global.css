@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 /* ===== CUSTOM THEME ===== */
@@ -14,9 +13,9 @@
   --color-primary-800: #0a1320;
   --color-primary-900: #050910;
 
-  --color-accent-400: #cfa968;
-  --color-accent-500: #b58c42;
-  --color-accent-600: #916f31;
+  --color-accent-400: #bfa36b;
+  --color-accent-500: #9c8150;
+  --color-accent-600: #76613a;
 
   --color-surface-50: #f8fafc;
   --color-surface-100: #f1f5f9;
@@ -45,9 +44,20 @@ body {
   @apply bg-surface-50 text-surface-900 transition-colors duration-300;
 }
 
-/* Dark mode */
-html.dark body {
-  @apply bg-surface-950 text-surface-100;
+
+/* ===== FOCUS ===== */
+/* Navy ring on light sections, brass ring on the dark ones */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 3px;
+  }
+  #hero :focus-visible,
+  #contact :focus-visible,
+  #code-modal :focus-visible,
+  #pdf-modal :focus-visible {
+    outline-color: var(--color-accent-400);
+  }
 }
 
 /* ===== SCROLLBAR ===== */
@@ -60,16 +70,10 @@ html.dark body {
 ::-webkit-scrollbar-thumb {
   @apply bg-surface-200 rounded-full;
 }
-html.dark ::-webkit-scrollbar-thumb {
-  @apply bg-surface-700;
-}
 
 /* ===== SELECTION ===== */
 ::selection {
   @apply bg-primary-500/30 text-primary-900;
-}
-html.dark ::selection {
-  @apply bg-primary-400/30 text-primary-100;
 }
 
 /* ===== SECTION STYLES ===== */
@@ -80,40 +84,10 @@ html.dark ::selection {
 .section-subtitle {
   @apply text-surface-700 text-lg mb-12;
 }
-html.dark .section-subtitle {
-  @apply text-surface-200;
-}
 
 /* ===== SOLID PANELS (Former Glass) ===== */
 .glass {
-  @apply bg-white border border-surface-200 shadow-sm;
-}
-html.dark .glass {
-  @apply bg-surface-850 border-surface-700 shadow-none;
-}
-
-/* ===== GRADIENT TEXT ===== */
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-800;
-}
-html.dark .gradient-text {
-  @apply bg-gradient-to-r from-primary-300 to-primary-500;
-}
-
-/* ===== ANIMATED BLOB ===== */
-@keyframes blob {
-  0%, 100% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-}
-.animate-blob {
-  animation: blob 7s infinite;
-}
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-.animation-delay-4000 {
-  animation-delay: 4s;
+  @apply bg-white;
 }
 
 /* ===== FADE IN UP ===== */
@@ -139,41 +113,26 @@ html.dark .gradient-text {
 .stagger-4 { animation-delay: 0.4s; }
 .stagger-5 { animation-delay: 0.5s; }
 
-/* ===== TIMELINE ===== */
-.timeline-line {
-  @apply absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-surface-200;
-}
-html.dark .timeline-line {
-  @apply bg-surface-700;
-}
-
-.timeline-dot {
-  @apply absolute left-4 md:left-1/2 w-4 h-4 rounded-sm bg-primary-500 border-2 border-white shadow-sm z-10;
-  transform: translate(-50%, 0);
-}
-html.dark .timeline-dot {
-  @apply border-surface-900;
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ===== CARD HOVER ===== */
 .project-card {
-  @apply transition-all duration-300 ease-out;
-}
-.project-card:hover {
-  @apply -translate-y-2 shadow-2xl;
+  @apply transition-colors duration-200;
 }
 
 /* ===== FOCUS STYLES ===== */
 input:focus, textarea:focus {
   @apply outline-none ring-2 ring-primary-500/50 border-primary-500;
-}
-
-/* ===== GLOW EFFECT ===== */
-.glow {
-  box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.3);
-}
-html.dark .glow {
-  box-shadow: 0 0 60px -10px rgba(139, 92, 246, 0.25);
 }
 
 /* ===== RESPONSIVE UTILITIES ===== */

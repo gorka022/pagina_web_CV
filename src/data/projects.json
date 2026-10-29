@@ -59,10 +59,10 @@
     "longDescription": "This project models the dynamic relationships between major macroeconomic variables—specifically inflation, unemployment, federal interest rates, and 10-year treasury bonds—using a Vector Autoregression (VAR) framework. After determining the optimal lag structure using the Akaike Information Criterion (AIC), it applies structural identification techniques like Cholesky decomposition and Monte Carlo-based sign restrictions to isolate monetary policy shocks. Ultimately, the project generates Impulse Response Function (IRF) plots to visualize how sudden shifts in interest rates ripple through the broader economy over a 24-month horizon.",
     "image": "",
     "tags": [
-      "R",
-      "ARIMA",
+      "Python",
       "VAR",
-      "Forecasting",
+      "Impulse Response",
+      "Sign Restrictions",
       "Econometrics"
     ],
     "link": "",
